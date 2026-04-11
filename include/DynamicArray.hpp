@@ -26,5 +26,6 @@ public:
 
     void resize();
     void shrink();
+    void clear();
     void print();
 };

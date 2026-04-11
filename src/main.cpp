@@ -1,5 +1,7 @@
 #include <iostream>
-#include <random.hpp>
+#include <fstream>
+#include <string>
+#include <utility.hpp>
 #include <DynamicArray.hpp>
 
 int main()
@@ -48,6 +50,10 @@ int main()
                 std::cout << ">| Wyszukiwanie \n";
                 std::cout << "7 | Wyszukaj element w strukturze (wygeneruj)\n";
                 std::cout << "8 | Wyszukaj element w strukturze (wpisz)\n";
+
+                std::cout << ">| Uzupelnianie struktury \n";
+                std::cout << "9 | Zbuduj z pliku\n";
+                std::cout << "10 | Zbuduj losowo\n";
 
                 std::cout << "q | Powrot do menu glownego\n";
 
@@ -110,7 +116,9 @@ int main()
                 }
                 case '6': // remove(int index)
                 {
-                    int index2{}; // <- tu zrobic generacje losowego miejsca tablicy gdzie trzeba znac size tablicy aby nie wyszlo poza zakres
+                    int min{0};
+                    int max{arr.getSize() - 1};
+                    int index2{getRandom(min, max)}; // <- tu zrobic generacje losowego miejsca tablicy gdzie trzeba znac size tablicy aby nie wyszlo poza zakres
                     arr.getSize();
                     arr.remove(index2);
                     arr.print();
@@ -118,16 +126,68 @@ int main()
                 }
                 case '7': // find(int value)
                 {
-                    int value1{};
+
+                    int min{0};
+                    int max{100000};
+                    int value1{getRandom(min, max)}; // <- tu zrobic generacje value
+                    std::cout << "Wylosowana liczba to: " << value1 << '\n';
                     arr.find(value1);
                     arr.print();
                     break;
                 }
                 case '8': // find(int value)
                 {
-                    int value2{}; // <- tu zrobic generacje value
-
+                    int value2{};
+                    std::cout << "Wpisz wartosc jakiej szukasz:";
+                    std::cin >> value2;
+                    std::cout << '\n';
                     arr.find(value2);
+                    arr.print();
+                    break;
+                }
+                case '9': // buduj z pliku (najpierw usunąć poprzednie dane przed wczytaniem nowych)
+                {
+                    std::string fileName{};
+                    std::cout << "Podaj naze pliku z ktorego chcesz zaimportowac dane: \n";
+                    std::cin >> fileName;
+                    std::cout << "\n";
+
+                    std::ifstream file(fileName); // otwieranie pliku
+
+                    if (file.is_open())
+                    {
+                        arr.clear();
+                        int value{};
+                        while (file >> value) // wykonuje sie dopoki nie wczytaja sie wszystkie elementy pliku
+                        {
+                            arr.addLast(value);
+                        }
+                        file.close();
+                        std::cout << "Wczytano wszystkie dane!\n";
+                        arr.print();
+                    }
+                    else
+                    {
+                        std::cerr << "Blad odczytu pliku o nazwie" << fileName << "!\n";
+                    }
+
+                    break;
+                }
+                case '10': // buduj losowo (zapytaj o wielkosc)
+                {
+                    int min{1};
+                    int max{100000};
+                    int size{};
+                    std::cout << "Podaj rozmiar tablicy: ";
+                    std::cin >> size;
+                    std::cout << "\n";
+                    arr.clear();
+
+                    for (int i = 0; i < size; ++i)
+                    {
+                        arr.addLast(getRandom(min, max));
+                    }
+
                     arr.print();
                     break;
                 }

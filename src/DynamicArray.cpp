@@ -30,13 +30,6 @@ void DynamicArray::addFirst(int element)
 
     m_array[0] = element;
     ++m_size;
-
-    // sczyt glupoty |
-    //               v
-    //  for (int i = 0; i < m_size; ++i)
-    //  {
-    //      m_array[m_size - i] = m_array[m_size - i - 1]; // [m_size - i] zmienia pozycje co iteracje a [m_size - 1] przypisuje poprzednia wartosc
-    //  }
 }
 void DynamicArray::add(int index, int element)
 {
@@ -105,7 +98,7 @@ int DynamicArray::find(int value)
     {
         if (m_array[i] == value)
         {
-            std::cout << "twoja watrosc znajduje sie pod indexem: " << i << '\n';
+            std::cout << "twoja wartosc znajduje sie pod indexem: " << i << '\n';
             return i;
         }
     }
@@ -130,8 +123,6 @@ void DynamicArray::resize()
 void DynamicArray::shrink()
 {
 
-    // if ((static_cast<double>(m_size) / static_cast<double>(m_capacity)) <= 0.25) // ten przypadek jest wolniejszy ale mozliwy do uzycia
-
     //          tutaj 4  | to pojemnosc startowa capacity
     //                   v
     if ((m_size > 0) && (4 <= m_capacity / 2) && m_size <= m_capacity / 4) // (m_size <= m_capacity / 4) sprawdz czy tablica zawiera mniej niz 25 capacity w celu optymalizacji zajmowanej pamieci
@@ -146,6 +137,15 @@ void DynamicArray::shrink()
         delete[] m_array;
         m_array = shrinkedArray;
     }
+}
+
+void DynamicArray::clear()
+{
+    m_size = 0;
+    m_capacity = 4;
+    int *newArray = new int[m_capacity];
+    delete[] m_array;
+    m_array = newArray;
 }
 
 void DynamicArray::print()
