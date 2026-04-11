@@ -13,6 +13,8 @@ public:
     DynamicArray(int capacity = 4);
     ~DynamicArray();
 
+    int getSize();
+
     void addLast(int element);
     void addFirst(int element);
     void add(int index, int element);
@@ -23,5 +25,6 @@ public:
     int find(int value);
 
     void resize();
+    void shrink();
     void print();
 };

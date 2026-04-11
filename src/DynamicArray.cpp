@@ -3,6 +3,8 @@
 DynamicArray::DynamicArray(int capacity) : m_size{0}, m_capacity{capacity}, m_array{new int[capacity]} {};
 DynamicArray::~DynamicArray() { delete[] m_array; }
 
+int DynamicArray::getSize() { return m_size; }
+
 void DynamicArray::addLast(int element)
 {
 
@@ -123,6 +125,27 @@ void DynamicArray::resize()
     }
     delete[] m_array;
     m_array = resizedArray;
+}
+
+void DynamicArray::shrink()
+{
+
+    // if ((static_cast<double>(m_size) / static_cast<double>(m_capacity)) <= 0.25) // ten przypadek jest wolniejszy ale mozliwy do uzycia
+
+    //          tutaj 4  | to pojemnosc startowa capacity
+    //                   v
+    if ((m_size > 0) && (4 <= m_capacity / 2) && m_size <= m_capacity / 4) // (m_size <= m_capacity / 4) sprawdz czy tablica zawiera mniej niz 25 capacity w celu optymalizacji zajmowanej pamieci
+    {
+        m_capacity = m_capacity / 2;
+        int *shrinkedArray = new int[m_capacity];
+
+        for (int i = 0; i < m_size; ++i)
+        {
+            shrinkedArray[i] = m_array[i];
+        }
+        delete[] m_array;
+        m_array = shrinkedArray;
+    }
 }
 
 void DynamicArray::print()
