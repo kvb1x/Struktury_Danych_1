@@ -1,9 +1,21 @@
 class LinkedList
 {
 private:
+    struct Node
+    {
+        int value{};
+        Node *next{};
+    };
+
+    int m_size{0}; // rozmiar listy
+
+    Node *head{nullptr}; // lista jest pusta na poczatku
+
+    Node *tail{nullptr};
+
 public:
     LinkedList() = default;
-    LinkedList(int capacity = 4);
+    LinkedList(int size = 0);
     ~LinkedList();
 
     int getSize();
@@ -17,8 +29,6 @@ public:
     void remove(int index);
     int find(int value);
 
-    void resize();
-    void shrink();
     void clear();
     void print();
 };
