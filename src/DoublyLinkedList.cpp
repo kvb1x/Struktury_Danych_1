@@ -1,10 +1,4 @@
-// node.next.head
-// node.prev = head.prev
-// head.prev.next = node
-// head.prev = node
-// head = node
-
-#include <DoublyLinkedList.hpp>
+#include "DoublyLinkedList.hpp"
 #include <iostream>
 
 DoublyLinkedList::DoublyLinkedList(int size) : m_size{0} {};
@@ -15,9 +9,10 @@ int DoublyLinkedList::getSize() { return m_size; }
 void DoublyLinkedList::addLast(int element)
 {
 
-    Node *newNode = new Node;
-    newNode->value = element;
-    newNode->next = nullptr;
+    Node *newNode = new Node; // tworzymy nowy wezel w pamieci
+    newNode->value = element; // pakujemy wartosc do nowego wezla
+    newNode->next = nullptr;  // nastepny to null bo dodajemy na sam koniec
+    newNode->prev = nullptr;  // poprzedni na razie null
 
     if (head == nullptr) // sprawdzienie czy lista jest pusta
     {
@@ -27,15 +22,17 @@ void DoublyLinkedList::addLast(int element)
     else
     {
         tail->next = newNode; // ustawiamy tail na nowy node jesli lista nie jest pusta
-        tail = newNode;       // teraz tail jest koncem listy
+        newNode->prev = tail; // spinamy w tyl nowy wezel z aktualnym koncem
+        tail = newNode;       // teraz tail jest nowym koncem listy
     }
     ++m_size;
 };
 void DoublyLinkedList::addFirst(int element)
 {
-    Node *newNode = new Node;
+    Node *newNode = new Node; // tworzymy nowy wezel
     newNode->value = element; // pakujemy wartosc do nowego wezla
     newNode->next = nullptr;
+    newNode->prev = nullptr;
 
     if (head == nullptr) // sprawdzienie czy lista jest pusta
     {
@@ -44,8 +41,8 @@ void DoublyLinkedList::addFirst(int element)
     }
     else
     {
-
-        newNode->next = head; // ustawiamy head na nowy node jesli lista nie jest pusta
+        newNode->next = head; // ustawiamy stary head jako nastepnik nowego wezla
+        head->prev = newNode; // stary head musi wskazywac do tylu na nowy element
         head = newNode;       // teraz head jest poczatkiem listy
     }
     ++m_size;
@@ -62,32 +59,36 @@ void DoublyLinkedList::add(int index, int element)
         Node *newNode = new Node;
         newNode->value = element; // pakujemy wartosc do nowego wezla
         newNode->next = nullptr;
+        newNode->prev = nullptr;
 
         head = newNode; // jesli tak to zmieniamy nowy obiekt na startowy
         tail = newNode; // tail tez do tego przypisujemy bo to jedyno node w liscie
     }
     else if (index == 0)
     {
-        addFirst(element);
+        addFirst(element); // uzywamy gotowej funkcji jesli to poczatek
         return;
     }
     else if (index == m_size)
     {
-        addLast(element);
+        addLast(element); // uzywamy gotowej funkcji jesli to koniec
         return;
     }
     else
     {
-        Node *newNode = new Node;
-        Node *current = head; // tworzymy wskaznik na aktualny node
+        Node *newNode = new Node; // tworzymy nowy wezel
+        Node *current = head;     // tworzymy wskaznik na aktualny node zeby zaczac szukac
 
         for (int i = 0; i < index - 1; ++i) // szukamy wezla o podanym indexie -1 (czyli poprzedniego od zadanego)
         {
-            current = current->next;
+            current = current->next; // przechodzimy na kolejny wezel w liscie
         }
-        newNode->value = element;
-        newNode->next = current->next; // przyczepiamy node z prawej
-        current->next = newNode;       // przyczepiamy stary node do lewej strony newNode
+        newNode->value = element;      // pakujemy wartosc
+        newNode->next = current->next; // przyczepiamy node z prawej strony nowego wezla
+        newNode->prev = current;       // podpinamy lewa strone nowego noda do currenta
+
+        current->next->prev = newNode; // podpinamy sasiada z prawej zeby wskazywal w tyl na nowy node
+        current->next = newNode;       // przyczepiamy stary node zeby wskazywal w przod na nowy node
     }
 
     ++m_size;
@@ -104,21 +105,18 @@ void DoublyLinkedList::removeLast()
     else if (tail == head) // tu sprawdzamy czy lista sklada sie tylko z jednego wezla
     {
 
-        delete tail;
-        tail = nullptr;
-        head = nullptr;
+        delete tail;    // usuwamy jedyny wezel
+        tail = nullptr; // resetujemy tail
+        head = nullptr; // resetujemy head
     }
     else
     {
-        Node *current = head;                  // tworzymy wskaznik na aktualny node
-        while (current->next->next != nullptr) // szukamy noda w ktorym jesli sie znajdziemy to bedziemy wiedzieli ze jestesmy w przedostatnim od konca
-        {
-            current = current->next;
-        }
-        delete tail;    // usuwamy stary node z ostatniego miejsca listy
-        tail = current; // po znalezienu przedostatniego ustawiamy go na tail
+        Node *current = tail->prev; // wykorzystujemy prev by uniknac przechodzenia pętla calej listy i od razu mamy przedostatni
 
-        tail->next = nullptr; // ustawiamy ostatni node na null
+        delete tail;    // usuwamy stary node z ostatniego miejsca listy
+        tail = current; // ustawiamy przedostatni element jako nowy tail
+
+        tail->next = nullptr; // ustawiamy nowy ostatni node zeby wskazywal w przod na null
     }
     --m_size;
 };
@@ -133,13 +131,17 @@ void DoublyLinkedList::removeFirst()
     }
     else
     {
-        Node *temp = head; // tymczasowo przechowujemy aktualny head
-        head = head->next;
+        Node *temp = head; // tymczasowo przechowujemy aktualny head by go potem usunac
+        head = head->next; // przesuwamy head na nastepny element w liscie
 
-        delete temp;
-        if (head == nullptr) // sprawdzamy czy lista jest pusta i resetujem tail jesli wczesniej lusta zawierala TYLKO JEDEN ELEMENT
+        delete temp;         // zwalniamy pamiec starego poczatku
+        if (head == nullptr) // sprawdzamy czy lista zrobila sie pusta po usunieciu
         {
-            tail = nullptr;
+            tail = nullptr; // jak pusta to czyscimy tez tail
+        }
+        else
+        {
+            head->prev = nullptr; // czyscimy dowiazanie w tyl dla nowego poczatku listy
         }
     }
 
@@ -147,7 +149,7 @@ void DoublyLinkedList::removeFirst()
 };
 void DoublyLinkedList::remove(int index)
 {
-    if (index < 0 || index > m_size - 1) // przy usuwaniu musi byc size -1
+    if (index < 0 || index > m_size - 1) // przy usuwaniu musi byc size -1 bo liczymy od zera
     {
         std::cout << "Nieprawidlowy index!\n";
         return;
@@ -160,12 +162,12 @@ void DoublyLinkedList::remove(int index)
     }
     else if (index == 0)
     {
-        removeFirst();
+        removeFirst(); // gotowa funkcja dla pierwszego elementu
         return;
     }
-    else if (index == m_size - 1) // tu tak saomo pryz usuwaniu size -1 (ostatni element bo liczymy od 0)
+    else if (index == m_size - 1) // tu tak samo przy usuwaniu size -1 dla ostatniego
     {
-        removeLast();
+        removeLast(); // gotowa funkcja dla ostatniego elementu
         return;
     }
     else
@@ -175,12 +177,13 @@ void DoublyLinkedList::remove(int index)
 
         for (int i = 0; i < index - 1; ++i) // szukamy wezla o podanym indexie -1 (czyli poprzedniego od zadanego)
         {
-            current = current->next;
+            current = current->next; // idziemy w przod listy
         }
 
-        Node *temp = current->next;          // przechowanie tymczasowe starego node
-        current->next = current->next->next; // przyczepiamy stary node do lewej strony newNode
-        delete temp;
+        Node *temp = current->next;          // przechowanie tymczasowe wezla do usuniecia
+        current->next = current->next->next; // lewy wezel musi przeskoczyc usuwany i wskazac na ten za nim
+        current->next->prev = current;       // prawy wezel musi wskazac w tyl na ten z lewej (ominiety element)
+        delete temp;                         // zwalniamy z pamieci ominiety wezel
     }
 
     --m_size;
@@ -194,18 +197,18 @@ int DoublyLinkedList::find(int value)
     }
     else
     {
-        Node *current = head; // tworzymy wskaznik na aktualny node
-        int counter{0};
+        Node *current = head;      // tworzymy wskaznik na aktualny node
+        int counter{0};            // licznik do sprawdzania indexu
         while (current != nullptr) // przechodzimy przez wszystkie nody az do "pustego"
         {
 
-            if (current->value == value)
+            if (current->value == value) // jak trafimy na szukana wartosc
             {
                 std::cout << "twoja wartosc znajduje sie pod indexem: " << counter << '\n';
-                return counter;
+                return counter; // zwracamy gdzie ja znalezlismy
             }
-            current = current->next;
-            ++counter;
+            current = current->next; // skaczemy na kolejny wezel
+            ++counter;               // zwiekszamy licznik indexu
         }
     }
     std::cerr << "Brak takiej warosci w liscie!\n";
@@ -227,7 +230,7 @@ void DoublyLinkedList::clear()
         while (head != nullptr) // przechodzimy przez wszystkie nody az do "pustego"
         {
 
-            removeFirst();
+            removeFirst(); // po kolei usuwamy wszystko od poczatku az bedzie czysto
         }
     }
 };
@@ -243,10 +246,10 @@ void DoublyLinkedList::print()
     else
     {
         Node *current = head;      // tworzymy wskaznik na aktualny node
-        while (current != nullptr) // przechodzimy przez wszystkie nody az do "pustego"
+        while (current != nullptr) // przechodzimy przez wszystkie nody az do konca
         {
-            std::cout << "Wartosc wezla to" << current->value << '\n';
-            current = current->next;
+            std::cout << "Wartosc wezla to " << current->value << '\n'; // wypisujemy to co w srodku wezla
+            current = current->next;                                    // idziemy do nastepnego
         }
     }
 };

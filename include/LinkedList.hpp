@@ -1,3 +1,4 @@
+#pragma once
 class LinkedList
 {
 private:
@@ -14,7 +15,7 @@ private:
     Node *tail{nullptr};
 
 public:
-    LinkedList() = default;
+    // LinkedList() = default;
     LinkedList(int size = 0);
     ~LinkedList();
 

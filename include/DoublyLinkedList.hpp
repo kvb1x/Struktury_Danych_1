@@ -1,3 +1,5 @@
+#pragma once
+
 class DoublyLinkedList
 {
 private:
@@ -8,14 +10,14 @@ private:
         Node *prev{};
     };
 
-    int m_size{0}; // rozmiar listy
+    int m_size{0};
 
-    Node *head{nullptr}; // lista jest pusta na poczatku
+    Node *head{nullptr};
 
     Node *tail{nullptr};
 
 public:
-    DoublyLinkedList() = default;
+    // DoublyLinkedList() = default;
     DoublyLinkedList(int size = 0);
     ~DoublyLinkedList();
 

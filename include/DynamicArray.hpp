@@ -9,7 +9,7 @@ private:
     int *m_array{nullptr};
 
 public:
-    DynamicArray() = default;
+    // DynamicArray() = default;
     DynamicArray(int capacity = 4);
     ~DynamicArray();
 
