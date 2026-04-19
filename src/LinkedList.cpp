@@ -2,7 +2,7 @@
 #include <iostream>
 
 LinkedList::LinkedList(int size) : m_size{0} {};
-LinkedList::~LinkedList() {};
+LinkedList::~LinkedList() { clear(); };
 
 int LinkedList::getSize() { return m_size; }
 

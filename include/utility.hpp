@@ -5,14 +5,13 @@
 #include <chrono>
 int getRandom(int min, int max)
 {
-    ////////////////////LOSOWANIE///////////////////////////
 
-    std::random_device rd;                             // zbieranie ziarna od OS
-    static std::mt19937 gen(rd());                     // uruchomienei mt
+    int seed{1000};
+    // std::random_device rd;
+    static std::mt19937 gen(seed);                     // uruchomienei mt
     std::uniform_int_distribution<int> dist(min, max); // ustalenie min i max
 
     return dist(gen); // przypisanie losowej liczby do indexu
-    //////////////////////////////////////////////
 }
 
 void generateFile(int size, std::string fileData)

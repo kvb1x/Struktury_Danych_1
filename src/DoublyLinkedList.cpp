@@ -2,7 +2,7 @@
 #include <iostream>
 
 DoublyLinkedList::DoublyLinkedList(int size) : m_size{0} {};
-DoublyLinkedList::~DoublyLinkedList() {};
+DoublyLinkedList::~DoublyLinkedList() { clear(); };
 
 int DoublyLinkedList::getSize() { return m_size; }
 

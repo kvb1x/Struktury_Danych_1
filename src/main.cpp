@@ -495,17 +495,17 @@ int main()
 
             for (int size = startSize; size <= maxSize; size += step)
             {
-                // Czasomierze Tablica
+                // licznik lablica
                 long long t_DA_addF = 0, t_DA_addL = 0, t_DA_addR = 0;
                 long long t_DA_remF = 0, t_DA_remL = 0, t_DA_remR = 0;
                 long long t_DA_find = 0;
 
-                // Czasomierze Lista 1kierunkowa
+                // licznik lista 1kierunkowa
                 long long t_SLL_addF = 0, t_SLL_addL = 0, t_SLL_addR = 0;
                 long long t_SLL_remF = 0, t_SLL_remL = 0, t_SLL_remR = 0;
                 long long t_SLL_find = 0;
 
-                // Czasomierze Lista 2kierunkowa
+                // licznik lista 2kierunkowa
                 long long t_DLL_addF = 0, t_DLL_addL = 0, t_DLL_addR = 0;
                 long long t_DLL_remF = 0, t_DLL_remL = 0, t_DLL_remR = 0;
                 long long t_DLL_find = 0;
@@ -513,7 +513,7 @@ int main()
                 for (int p = 0; p < probes; ++p)
                 {
                     // twory wspolne dane
-                    //  Generujemy tablicę N elementów, którą wczytamy do wszystkich 3 struktur
+                    //  generacja tablicę N elementów, którą wczytamy do wszystkich 3 struktur
                     int *commonData = new int[size];
                     for (int i = 0; i < size; ++i)
                     {
